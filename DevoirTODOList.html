@@ -3,34 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Todo App</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Modern Todo App</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/modern-css-reset/1.4.0/reset.min.css" rel="stylesheet">
     <style>
-        .done {
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button.add {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .filter-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .filter-buttons button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .filter-buttons button.active {
+            background-color: #007bff;
+            color: white;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 5px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        li.done {
+            background-color: #e9ecef;
             text-decoration: line-through;
             color: gray;
-        }
-        .filter-buttons .btn {
-            margin-right: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="container my-5">
-        <h1 class="text-center mb-4">Todo List</h1>
-        
-        <form id="taskForm" class="form-inline justify-content-center mb-4">
-            <input type="text" id="taskInput" class="form-control mr-2" placeholder="Add new task" required>
-            <button type="submit" class="btn btn-primary">Add Task</button>
+    <div class="container">
+        <h1>My Tasks</h1>
+        <form id="taskForm">
+            <input type="text" id="taskInput" placeholder="What needs to be done?" required>
+            <button type="submit" class="add">Add</button>
         </form>
-
-        <div class="text-center filter-buttons mb-3">
-            <button class="btn btn-secondary" onclick="filterTasks('all')">All</button>
-            <button class="btn btn-secondary" onclick="filterTasks('todo')">Todo</button>
-            <button class="btn btn-secondary" onclick="filterTasks('done')">Done</button>
+        <div class="filter-buttons">
+            <button onclick="filterTasks('all')" id="filter-all" class="active">All</button>
+            <button onclick="filterTasks('todo')" id="filter-todo">Todo</button>
+            <button onclick="filterTasks('done')" id="filter-done">Done</button>
         </div>
-
-        <ul id="taskList" class="list-group"></ul>
+        <ul id="taskList"></ul>
     </div>
 
     <script>
@@ -62,6 +128,8 @@
 
         function filterTasks(newFilter) {
             filter = newFilter;
+            document.querySelectorAll('.filter-buttons button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`filter-${filter}`).classList.add('active');
             displayTasks();
         }
 
@@ -71,8 +139,9 @@
             tasks.forEach((task, index) => {
                 if (filter === 'all' || filter === task.status) {
                     const listItem = document.createElement("li");
-                    listItem.className = `list-group-item ${task.status === 'done' ? 'done' : ''}`;
+                    listItem.className = task.status === 'done' ? 'done' : '';
                     listItem.textContent = task.name;
+
                     listItem.addEventListener("click", () => toggleTaskStatus(index));
                     taskList.appendChild(listItem);
                 }
